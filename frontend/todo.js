@@ -13,9 +13,9 @@ function createTodoElement(todo) {
            <div class="title">${todo.title}</div> 
            <div class="due">${due.toLocaleDateString()}</div>
            <div class="actions">
-              <button class="status" onclick="changeStatus(${todo._id})">${status[todo.status || 0]}</button>
-              <button class="edit" onclick="editTodo(${todo._id})">Bearbeiten</button>
-              <button class="delete" onclick="deleteTodo(${todo._id})">Löschen</button>
+              <button class="status" onclick="changeStatus('${todo._id}')">${status[todo.status || 0]}</button>
+              <button class="edit" onclick="editTodo('${todo._id}')">Bearbeiten</button>
+              <button class="delete" onclick="deleteTodo('${todo._id}')">Löschen</button>
            </div>
          </div>`);
 
@@ -41,7 +41,7 @@ function initForm(event) {
     event.target.title.value = "";
     event.target.submit.value = "Todo hinzufügen";
     // Reset the id. This is used to determine if we are editing or creating a new todo.
-    event.target.dataset.id = "";
+    event.target.dataset._id = "";
 
     // Set the default due date to 3 days from now
     event.target.due.valueAsDate = new Date(Date.now() + 3 * 86400000);
@@ -63,8 +63,8 @@ function saveTodo(evt) {
     evt.preventDefault();
 
     // Get the id from the form. If it is not set, we are creating a new todo.
-    let _id = Number.parseInt(evt.target.dataset.id) || null;
-
+    let _id = evt.target.dataset._id || null;
+    console.log("Saving todo with id: %o", _id);
     let todo = {
         title: evt.target.title.value,
         due: evt.target.due.valueAsDate,
@@ -77,6 +77,7 @@ function saveTodo(evt) {
     }
 
     let index = _id ? todos.findIndex(t => t._id === _id) : -1;
+    console.log("Index: %o", index);
     if (index >= 0) {
         console.log("Updating todo: %o", todo);
         fetch(API + "/" + _id, {
@@ -113,6 +114,7 @@ function saveTodo(evt) {
             })
     }
     evt.target.reset();
+    evt.target._id = "";
 }
 
 function editTodo(id) {
