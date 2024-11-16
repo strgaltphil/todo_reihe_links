@@ -94,13 +94,39 @@ async function initDB() {
     console.log("Connected to database");
 }
 
-
-const todoValidationRules = [
+const todoValidationRulesWithoutId = [
     check('title')
         .notEmpty()
         .withMessage('Titel darf nicht leer sein')
         .isLength({ min: 3 })
         .withMessage('Titel muss mindestens 3 Zeichen lang sein'),
+    check('due')
+        .notEmpty()
+        .withMessage('Fälligkeitsdatum darf nicht leer sein')
+        .isISO8601()
+        .withMessage('Fälligkeitsdatum muss ein gültiges Datum sein (ISO8601-Format)'),
+    check('status')
+        .notEmpty()
+        .withMessage('Status darf nicht leer sein')
+        .isInt({ min: 0, max: 2 }) // Adjust the range based on valid status values
+        .withMessage('Status muss eine Zahl zwischen 0 und 2 sein'),
+];
+
+const todoValidationRulesWithId = [
+    ...todoValidationRulesWithoutId,
+    check('_id')
+        .notEmpty()
+        .withMessage('ID darf nicht leer sein')
+        .isMongoId()
+        .withMessage('ID muss eine gültige MongoDB-ID sein')
+];
+
+const todoIdParamValidationRules = [
+    check('id')
+        .notEmpty()
+        .withMessage('ID darf nicht leer sein')
+        .isMongoId()
+        .withMessage('ID muss eine gültige MongoDB-ID sein'),
 ];
 
 
@@ -166,8 +192,13 @@ app.get('/todos', authenticate,
  *     '500':
  *        description: Serverfehler
  */
-app.get('/todos/:id', authenticate,
+app.get('/todos/:id', todoIdParamValidationRules, authenticate,
     async (req, res) => {
+        const result = validationResult(req);
+        if (!result.isEmpty()) {
+            res.status(400).send(result.array());
+            return;
+        }
         let id = req.params.id;
         return db.queryById(id)
             .then(todo => {
@@ -221,7 +252,7 @@ app.get('/todos/:id', authenticate,
  *    '500':
  *      description: Serverfehler
  */
-app.put('/todos/:id', authenticate,
+app.put('/todos/:id', todoValidationRulesWithId, authenticate,
     async (req, res) => {
         let id = req.params.id;
         let todo = req.body;
@@ -229,6 +260,15 @@ app.put('/todos/:id', authenticate,
             console.log("id in body does not match id in path: %s != %s", todo._id, id);
             res.sendStatus(400, "{ message: id in body does not match id in path}");
             return;
+        }
+        const result = validationResult(req);
+        if (!result.isEmpty()) {
+            res.status(400).send(result.array());
+            return;
+        }
+        const keys = Object.keys(req.body);
+        if (keys.length !== todoValidationRulesWithId.length) {
+            return res.status(400).json({ error: 'Additional fields are not allowed' });
         }
         return db.update(id, todo)
             .then(todo => {
@@ -269,11 +309,20 @@ app.put('/todos/:id', authenticate,
  *     '500':
  *       description: Serverfehler
  */
-app.post('/todos', authenticate,
+app.post('/todos', todoValidationRulesWithoutId, authenticate,
     async (req, res) => {
+        const result = validationResult(req);
+        if (!result.isEmpty()) {
+            res.status(400).send(result.array());
+            return;
+        }
+        const keys = Object.keys(req.body);
+        if (keys.length !== todoValidationRulesWithoutId.length) {
+            return res.status(400).json({ error: 'Additional fields are not allowed' });
+        }
         let todo = req.body;
         if (!todo) {
-            res.sendStatus(400, { message: "Todo fehlt" });
+            res.sendStatus(400, { message: "Todo is missing" });
             return;
         }
         return db.insert(todo)
@@ -308,8 +357,13 @@ app.post('/todos', authenticate,
  *        '500':
  *          description: Serverfehler
  */
-app.delete('/todos/:id', authenticate,
+app.delete('/todos/:id', todoIdParamValidationRules, authenticate,
     async (req, res) => {
+        const result = validationResult(req);
+        if (!result.isEmpty()) {
+            res.status(400).send(result.array());
+            return;
+        }
         let id = req.params.id;
         return db.delete(id)
             .then(todo => {
