@@ -12,8 +12,8 @@ jobs:
 
     steps:
       - name: List files in the workspace
-        run: ls -R /github/workspace
-        
+        run: ls -R
+
       - name: Analyze with SonarQube
 
         # You can pin the exact commit or the version.
