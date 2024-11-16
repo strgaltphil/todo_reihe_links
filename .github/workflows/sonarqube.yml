@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: List files in the workspace
+        run: ls -R /github/workspace
+        
       - name: Analyze with SonarQube
 
         # You can pin the exact commit or the version.
