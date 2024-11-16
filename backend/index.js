@@ -92,21 +92,28 @@ async function initDB() {
 
 const todoValidationRulesWithoutId = [
     check('title')
+        .trim()
         .notEmpty()
         .withMessage('Titel darf nicht leer sein')
-        .isLength({ min: 3 })
-        .withMessage('Titel muss mindestens 3 Zeichen lang sein'),
+        .isString()
+        .withMessage('Titel muss ein Text sein')
+        .isLength({ min: 3, max: 100 })
+        .withMessage('Titel muss mindestens 3 und maximal 100 Zeichen lang sein'),
+
     check('due')
         .notEmpty()
         .withMessage('Fälligkeitsdatum darf nicht leer sein')
         .isISO8601()
-        .withMessage('Fälligkeitsdatum muss ein gültiges Datum sein (ISO8601-Format)'),
+        .withMessage('Fälligkeitsdatum muss ein gültiges Datum im ISO8601-Format sein'),
+
     check('status')
         .notEmpty()
         .withMessage('Status darf nicht leer sein')
-        .isInt({ min: 0, max: 2 }) // Adjust the range based on valid status values
-        .withMessage('Status muss eine Zahl zwischen 0 und 2 sein'),
+        .isInt({ min: 0, max: 2 })
+        .withMessage('Status muss eine Ganzzahl zwischen 0 und 2 sein')
+        .toInt(),
 ];
+
 
 const todoValidationRulesWithId = [
     ...todoValidationRulesWithoutId,
@@ -114,7 +121,7 @@ const todoValidationRulesWithId = [
         .notEmpty()
         .withMessage('ID darf nicht leer sein')
         .isMongoId()
-        .withMessage('ID muss eine gültige MongoDB-ID sein')
+        .withMessage('ID muss eine gültige MongoDB-ID sein'),
 ];
 
 const todoIdParamValidationRules = [
@@ -122,7 +129,7 @@ const todoIdParamValidationRules = [
         .notEmpty()
         .withMessage('ID darf nicht leer sein')
         .isMongoId()
-        .withMessage('ID muss eine gültige MongoDB-ID sein'),
+        .withMessage('ID muss eine gültige MongoDB-ID sein')
 ];
 
 

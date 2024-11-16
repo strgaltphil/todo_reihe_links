@@ -54,6 +54,8 @@ export default class DB {
             .then(result => {
                 if (result.modifiedCount === 1) {
                     return todo;
+                } else if (result.matchedCount === 0) {
+                    return null;
                 }
                 else {
                     console.log('Error updating todo: %o, %s', result, id);
