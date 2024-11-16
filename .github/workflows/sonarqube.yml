@@ -1,11 +1,7 @@
 name: SonarQube analysis
 
 on:
-  push:
-    branches: [ "*" ]
-  pull_request:
-    branches: [ "*" ]
-  workflow_dispatch:
+  push
 
 permissions:
   pull-requests: read # allows SonarQube to decorate PRs with analysis results
