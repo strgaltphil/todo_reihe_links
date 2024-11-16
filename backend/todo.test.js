@@ -1,30 +1,24 @@
 import request from 'supertest';
 import { app, server, db } from './index';
-import getKeycloakToken from './utils';
 
-let token; // Speichert den abgerufenen JWT-Token
-
-// beforeAll(async () => {
-//     token = await getKeycloakToken();
-// });
-
-// describe('GET /todos (unautorisiert)', () => {
-//     it('sollte einen 401-Fehler zurückgeben, wenn kein Token bereitgestellt wird', async () => {
-//         const response = await request(app).get('/todos'); // Kein Authorization-Header
-
-//         expect(response.statusCode).toBe(401);
-//         expect(response.body.error).toBe('Unauthorized');
-//     });
-// });
+const validateTodoProperties = (todo) => {
+    expect(todo).toHaveProperty('_id'); 
+    expect(todo).toHaveProperty('title');
+    expect(todo).toHaveProperty('due');
+    expect(todo).toHaveProperty('status');
+}
 
 describe('GET /todos', () => {
     it('sollte alle Todos abrufen', async () => {
         const response = await request(app)
-            .get('/todos')
-            .set('Authorization', `Bearer ${token}`); // Fügen Sie den Authorization-Header hinzu
+            .get('/todos');
 
         expect(response.statusCode).toBe(200);
         expect(Array.isArray(response.body)).toBeTruthy();
+
+        response.body.forEach(todo => {
+            validateTodoProperties(todo);
+        });
     });
 });
 
@@ -38,11 +32,11 @@ describe('POST /todos', () => {
 
         const response = await request(app)
             .post('/todos')
-            .set('Authorization', `Bearer ${token}`)
             .send(newTodo);
         expect(response.statusCode).toBe(201);
         expect(response.body.title).toBe(newTodo.title);
         expect(response.body.due).toBe(newTodo.due);
+        expect(response.body.status).toBe(newTodo.status);
     });
 
     it('sollte einen 400-Fehler zurückgeben, wenn das Todo unvollständig ist', async () => {
@@ -53,7 +47,6 @@ describe('POST /todos', () => {
 
         const response = await request(app)
             .post('/todos')
-            .set('Authorization', `Bearer ${token}`)
             .send(newTodo);
 
         expect(response.statusCode).toBe(400);
@@ -69,7 +62,6 @@ describe('POST /todos', () => {
 
         const response = await request(app)
             .post('/todos')
-            .set('Authorization', `Bearer ${token}`)
             .send(newTodo);
 
         expect(response.statusCode).toBe(400);
@@ -86,26 +78,24 @@ describe('GET /todos/:id', () => {
 
         const response = await request(app)
             .post('/todos')
-            .set('Authorization', `Bearer ${token}`)
             .send(newTodo);
 
         const id = response.body._id;
 
         const getResponse = await request(app)
-            .get(`/todos/${id}`)
-            .set('Authorization', `Bearer ${token}`);
+            .get(`/todos/${id}`);
 
         expect(getResponse.statusCode).toBe(200);
         expect(getResponse.body.title).toBe(newTodo.title);
         expect(getResponse.body.due).toBe(newTodo.due);
+        expect(getResponse.body.status).toBe(newTodo.status);
     });
 
     it('sollte einen 404-Fehler zurückgeben, wenn das Todo nicht gefunden wurde', async () => {
         const id = '123456789012345678901234';
 
         const getResponse = await request(app)
-            .get(`/todos/${id}`)
-            .set('Authorization', `Bearer ${token}`);
+            .get(`/todos/${id}`);
 
         expect(getResponse.statusCode).toBe(404);
         expect(getResponse.body.error).toMatch(/Todo with id .+ not found/);
@@ -122,7 +112,6 @@ describe('PUT /todos/:id', () => {
 
         const response = await request(app)
             .post('/todos')
-            .set('Authorization', `Bearer ${token}`)
             .send(newTodo);
 
         const updatedTodo = {
@@ -134,7 +123,6 @@ describe('PUT /todos/:id', () => {
 
         const updateResponse = await request(app)
             .put(`/todos/${response.body._id}`)
-            .set('Authorization', `Bearer ${token}`)
             .send(updatedTodo);
 
         expect(updateResponse.statusCode).toBe(200);
@@ -152,19 +140,16 @@ describe('DELETE /todos/:id', () => {
 
         const response = await request(app)
             .post('/todos')
-            .set('Authorization', `Bearer ${token}`)
             .send(newTodo);
 
         const deleteResponse = await request(app)
-            .delete(`/todos/${response.body._id}`)
-            .set('Authorization', `Bearer ${token}`);
+            .delete(`/todos/${response.body._id}`);
 
 
         expect(deleteResponse.statusCode).toBe(204);
 
         const getResponse = await request(app)
-            .get(`/todos/${response.body._id}`)
-            .set('Authorization', `Bearer ${token}`);
+            .get(`/todos/${response.body._id}`);
 
         expect(getResponse.statusCode).toBe(404);
     });
