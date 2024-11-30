@@ -1,4 +1,4 @@
-## Dokumentation der Erstellung von Unit-Tests für das Backend
+## Dokumentation der Erstellung von Unit-Tests für das Backend | Name: Christopher Schröpfer | Matrikelnummer: 30267385
 
 ### Vorgehensweise
 
