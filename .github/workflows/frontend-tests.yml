@@ -28,6 +28,6 @@ jobs:
       - name: run backend
         run: npm run start
       - name: run frontend tests
-        uses: cypress-io/github-action
+        uses: cypress-io/github-action@v6
         with:
           start: npm run start
