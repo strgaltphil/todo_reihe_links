@@ -27,7 +27,5 @@ jobs:
         run: npm i
       - name: start application
         run: npm run start &
-      - name: curl frontend
-        run: curl http://localhost:3000/todo.html
       - name: start backend and run tests
-        run: npx cypress run
+        run: npm run cy:run
