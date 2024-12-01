@@ -26,5 +26,4 @@ jobs:
       - name: install dependencies
         run: npm i       
       - name: start backend and run tests
-        run: npm run start &
-        run: npx cypress run
+        run: npm run start & npx cypress run
