@@ -9,7 +9,7 @@
 
 ### Vorgehensweise
 
-Im Rahmen der Aufgabenstellung wurde die Backend-API um Unit-Tests ergänzt und bestehende Funktionalitäten verbessert. Ziel war es, eine gute Testabdeckung der API zu gewährleisten, indem Eingabedaten validiert und typische Anwendungsfälle und Fehlerfälle abgedeckt werden.
+Im Rahmen der Aufgabenstellung wurde die Backend-API um Unit-Tests ergänzt und bestehende Funktionalitäten verbessert. Ziel war es, eine gute Testabdeckung der API zu gewährleisten, indem Eingabedaten validiert und typische Anwendungs- und Fehlerfälle abgedeckt werden.
 
 Zunächst wurde die bestehende Codebasis analysiert, um eine Übersicht über die vorhandenen Funktionen und möglichen Fehlerquellen zu erhalten. Dabei wurden die folgenden relevanten Endpunkte identifiziert:
 
@@ -27,7 +27,7 @@ Die Implementierung der Tests erfolgte mit dem Framework supertest, das eine ein
 
 Diese Kombination ermöglicht ein effizientes Testen der API, da supertest die API-Aufrufe wie ein echter Client ausführt, während jest sicherstellt, dass die Ergebnisse den Erwartungen entsprechen. Beispielsweise wird überprüft, ob die API den korrekten HTTP-Statuscode zurückgibt oder ob die Antwort die erwarteten Felder enthält.
 
-Zusätzlich wurde die Backend-Validierung erweitert, um Fehler frühzeitig abzufangen und bessere Fehlermeldungen an den Client zu liefern.
+Zusätzlich wurde die Backend-Validierung erweitert, um Fehler frühzeitig abzufangen und präzisere Fehlermeldungen an den Client zu liefern.
 
 ---
 
@@ -58,7 +58,7 @@ Für jeden Endpunkt wurden mehrere Testszenarien erstellt:
   - Fehler bei der Angabe von Feldern mit einem falschen Datentyp.
 
 - **GET /todos/:id**:
-  - Erfolgreicher Abruf aller Todos.
+  - Erfolgreicher Abruf eines Todos.
   - Fehler bei Angabe einer nicht existierenden ID.
 
 - **PUT /todos/:id**:
@@ -85,7 +85,7 @@ Die API wurde so angepasst, dass im Fehlerfall klar verständliche und spezifisc
 **Herausforderung:** Nutzer konnten zusätzliche Felder in den Requests senden, die nicht zur API-Spezifikation gehörten.  
 **Lösung:** Eine explizite Prüfung der übermittelten Felder wurde eingeführt. Bei Abweichungen wird ein 400-Fehler (Bad Request) zurückgegeben.
 
-#### Problem: Falsche Fehlermeldungen bei PUT-/POST-Anfragen
+#### Problem: Unspezifische Fehlermeldungen bei PUT-/POST-Anfragen
 **Herausforderung:** Die API gab teilweise unspezifische Fehlermeldungen wie „Bad Request“ aus, was die Fehlerbehebung erschwerte. Außerdem passten die Meldungen und Fehlercodes teilweise nicht zu den bereits vorhandenen Testfällen, sodass einige Testfälle grundsätzlich fehlschlugen.
 **Lösung:** Die Fehlermeldungen wurden so überarbeitet, dass sie den genauen Grund des Fehlers benennen, z. B. „Titel muss mindestens 3 Zeichen lang sein“. Außerdem wurden die erwarteten Fehlermeldungen und -Codes in den Testfällen korrigiert.
 
@@ -167,21 +167,21 @@ Ich habe mich dazu entschieden, alle Workflows in eine Konfigurationsdatei zu pa
 Auf die Konfiguration der einzelnen Jobs jobs wird in den Folgenden Abschnitten eingegangen.
 
 ### Tests für das Backend
-Um das Backend zu testen wurde als Basis für den Workflow ein Ubuntu-Image verwendet, was in `runs-on` angegeben wird. 
+Um das Backend zu testen, wurde als Basis für den Workflow ein Ubuntu-Image verwendet, was in `runs-on` angegeben wird. 
 
-Da das Backend eine MongoDB-Datenbank benötigt und diese nicht weggemockt wurde, wird diese als Service in `services` hinzugefügt und ist mit den Standardwerden konfiguriert. Es wäre möglich, einen Nutzernamen und ein Passwort zu setzen, dies ist hier aber nicht nötig.
+Da das Backend eine MongoDB-Datenbank benötigt und diese nicht weggemockt wurde, wird diese als Service in `services` hinzugefügt und ist mit den Standardwerten konfiguriert. Es wäre möglich, einen Nutzernamen und ein Passwort zu setzen, dies ist hier aber nicht nötig.
 
-Damit MongoDB vom Backend erreicht werden kann ist es nötig, die Ports hierfür anzugeben.
+Damit MongoDB vom Backend erreicht werden kann, ist es nötig, die Ports hierfür anzugeben.
 
-Als nächstes wird in `defaults` das Arbeitsverzeichnis angegeben, welches verwendet werden soll. Für diesen Job ist das das Verzeichnis `backend`.
+Als nächstes wird in `defaults` das Arbeitsverzeichnis angegeben, welches verwendet werden soll. Für diesen Job ist das Verzeichnis `backend`.
 
-Nun werden die einzelnen Schritte in `steps` angegeben die benötigt werden, um das Backend zu testen. Zuerst muss der Code ausgecheckt werden, was mit dem importierten Workflow `actions/checkout@v4` passiert.
+Nun werden die einzelnen Schritte in `steps` angegeben, die benötigt werden, um das Backend zu testen. Zuerst muss der Code ausgecheckt werden, was mit dem importierten Workflow `actions/checkout@v4` passiert.
 
 Nachdem der Code im Workflow vorhanden ist, wird noch mit Hilfe von `actions/setup-node@v4` Node.js als JavaScript-Runtime in Version 20 hinzugefügt.
 
-Damit das Backend gebaut bzw. die Tests ausgeführt werden kann, werden die Abhängigkeiten mit Hilfe von `npm i` installiert.
+Damit das Backend gebaut bzw. die Tests ausgeführt werden können, werden die Abhängigkeiten mit Hilfe von `npm i` installiert.
 
-Danach können die Tests mit `npm run test` ausgeführt werden. Wenn alles in Ordnung ist, dann Quittiert GitHub die erfolgreiche Ausführung mit einem Grünen Symbol in der Actions-Übersicht. Wie das aussieht, wird am Ende noch einmal gezeigt.
+Danach können die Tests mit `npm run test` ausgeführt werden. Wenn alles in Ordnung ist, dann quittiert GitHub die erfolgreiche Ausführung mit einem grünen Symbol in der Actions-Übersicht. Wie das aussieht, wird am Ende noch einmal gezeigt.
 
 Konfiguration für die Backend-Tests:
 ```yml
@@ -239,9 +239,9 @@ frontend-tests:
 ### Codeanalyse mit SonarQube
 Als letztes wird noch die Konfiguration von SonarQube vorgenommen. SonarQube ist eine Software, um Softwarequalität festzustellen und bietet auch die Möglichkeit, Vorschläge für die Verbesserung des Quellcodes zu machen. So kann während des Entwicklungsprozesses schon schnell für eine hohe Softwarequalität gesorgt werden.
 
-Um SonarQube verwenden zu können ist es notwendig, ein neue Projekt in SonarQube anzulegen und sich dort dann einen Token für den Zugriff aus GitHub zu erstellen. Der Token und die Url der SonarQube-Instanz werden dann in die Secrets für die Actions des GitHub Projektes eingetragen und sind dann in jedem Durchlauf eines Workflows vorhanden und können verwendet werden, wie es in der Konfiguration ersichtlich ist.
+Um SonarQube verwenden zu können ist es notwendig, ein neues Projekt in SonarQube anzulegen und sich dort dann einen Token für den Zugriff aus GitHub zu erstellen. Der Token und die Url der SonarQube-Instanz werden dann in die Secrets für die Actions des GitHub Projektes eingetragen und sind dann in jedem Durchlauf eines Workflows vorhanden und können verwendet werden, wie es in der Konfiguration ersichtlich ist.
 
-Weiter musste noch der Key angegeben werden, der bei der Registrierung in SonarQube angegebene wurde. In diesem Fall `todo-reihe-links`. Als Vorlage für diesen Workflow diente der offizielle, [von SonarQube zur Verfügung gestellte](https://github.com/marketplace/actions/official-sonarqube-scan) Worflow.
+Weiter musste noch der Key angegeben werden, der bei der Registrierung in SonarQube angegeben wurde. In diesem Fall `todo-reihe-links`. Als Vorlage für diesen Workflow diente der offizielle, [von SonarQube zur Verfügung gestellte](https://github.com/marketplace/actions/official-sonarqube-scan) Worflow.
 
 Konfiguration von SonarQube:
 ```yml
@@ -264,7 +264,7 @@ sonar-analysis:
 ```
 
 ### Resultat
-Nachdem die Automatisierten Tests ausgeführt wurden kann nun der Actions-Übersicht entnommen werden, ob diese Erfolgreich waren.
+Nachdem die automatisierten Tests ausgeführt wurden, kann nun der Actions-Übersicht entnommen werden, ob diese erfolgreich waren.
 
 ![Actions Übersicht](image.png)
 
@@ -281,7 +281,7 @@ Wenn man nach dem Projekt in SonarQube sucht, kann man hier schon eine Übersich
 
 Wenn man das Projekt auswählt, kann man tiefer in die Probleme einsteigen, die SonarQube gefunden hat.
 
-Was auffällt ist, dass SonarQube speziell für dieses Projekt viele Fehlalarme auslöst, da Todos in produktiv eingesetztem Code nicht erwünscht sind. Dadurch, dass es sich bei der Analysierten Anwendung um eine Todo-App handelt, kommt das Wort Todo aber häufiger vor. Diese Fehlalarme können ignoriert werden.
+Was auffällt ist, dass SonarQube speziell für dieses Projekt viele Fehlalarme auslöst, da Todos in produktiv eingesetztem Code nicht erwünscht sind. Dadurch, dass es sich bei der analysierten Anwendung um eine Todo-App handelt, kommt das Wort Todo aber häufiger vor. Diese Fehlalarme können ignoriert werden.
 
 ![alt text](image-3.png)
 
@@ -289,11 +289,11 @@ Weiter findet SonarQube aber auch Probleme im Code selbst.
 
 ![const an Stelle von let](image-4.png)
 
-So Schlägt SonarQube Refactorings vor, die den Code konsistenter machen.
+So schlägt SonarQube Refactorings vor, die den Code konsistenter machen.
 
 Zusätzlich findet SonarQube auch Stellen im Code, in der z.B. Passwörter hart einprogrammiert sind. Zum Zeitpunkt der Erstellung dieser Dokumentation war das nicht mehr der Fall. Im ursprünglichen Code fand SonarQube aber genau solch ein Problem.
 
-Zusammenfassend ist zu sagen, dass durch den Einsatz von SonarQube im Code schon viele Probleme erkannt werden können, ohne dass ein Entwickler nach jedem Commit eine genaue Codereview durchführen muss. Trotzdem erspart SonarQube nicht, die Software auch manuell zu testen und den Code unter den Gesichtspunkten von z.B. der Fachlichkeit auf Korrektheit zu untersuchen.
+Zusammenfassend ist zu sagen, dass durch den Einsatz von SonarQube im Code schon viele Probleme erkannt werden können, ohne dass ein Entwickler nach jedem Commit ein genaues Codereview durchführen muss. Trotzdem erspart SonarQube nicht, die Software auch manuell zu testen und den Code unter den Gesichtspunkten von z.B. der Fachlichkeit auf Korrektheit zu untersuchen.
 
 ### Probleme beim Hinzufügen der Workflows
 Beim Hinzufügen der Workflows kam es nur zu kleineren Problemen.
