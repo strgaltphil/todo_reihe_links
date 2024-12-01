@@ -29,4 +29,5 @@ jobs:
         run: npm run start
       - name: run frontend tests
         uses: cypress-io/github-action
-        run: npm run cy:run
+        with:
+          start: npm run start
