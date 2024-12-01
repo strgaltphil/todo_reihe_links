@@ -27,7 +27,7 @@ jobs:
         run: npm i
       - name: run backend
         run: npm run start
+      - name: start backend
+        run: npm run start &
       - name: run frontend tests
-        uses: cypress-io/github-action@v6
-        with:
-          start: 'npm run start &'
+        run: npm run cy:run
