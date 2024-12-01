@@ -25,5 +25,7 @@ jobs:
           node-version: 20
       - name: install dependencies
         run: npm i
+      - name: start backend
+        run: npm run start &
       - name: run tests
         run: npx cypress run
