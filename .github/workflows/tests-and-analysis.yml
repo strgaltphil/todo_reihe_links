@@ -9,6 +9,8 @@ jobs:
     services:
       mongo:
         image: mongo
+        ports:
+          - 27017:27017
     defaults:
       run:
         working-directory: ./backend
@@ -29,6 +31,8 @@ jobs:
     services:
       mongo:
         image: mongo
+        ports:
+          - 27017:27017
     defaults:
       run:
         working-directory: ./backend
