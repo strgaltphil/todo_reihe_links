@@ -4,18 +4,20 @@ on:
   push
 
 jobs:
-  defaults:
-    run:
-    working-directory: ./backend
-  backend-tests:
+  job1:
+    name: backend tests
     build:
-    runs-on: ubuntu-latest
+      runs-on: ubuntu-latest
 
     services:
       mongo:
         image: mongo
         ports:
           - 27017:27017
+
+    defaults:
+      run:
+        working-directory: ./backend
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -27,7 +29,8 @@ jobs:
         run: npm i
       - name: run backend tests
         run: npm run test
-  frontend-tests:
+  job2:
+    name: frontend tests
     build:
       runs-on: ubuntu-latest
 
@@ -36,6 +39,10 @@ jobs:
           image: mongo
           ports:
             - 27017:27017
+
+      defaults:
+        run:
+          working-directory: ./backend
       steps:
         - name: Check out repository
           uses: actions/checkout@v4
