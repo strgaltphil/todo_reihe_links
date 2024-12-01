@@ -1,11 +1,9 @@
-
-
 🚀 DOKUMENTATION ZUR TESTIMPLEMENTIERUNG MIT CYPRESS 📋
 Name: Harun Silajdzija | Matrikelnummer: 30265109
 
 ✨ Einführung und Setup
 Zunächst habe ich einen Feature-Branch vom Main-Branch erstellt, nachdem sichergestellt wurde, dass alle Unit-Tests korrekt laufen und keine funktionalen Probleme bestehen.
-Anschließend habe ich ein Codespace eingerichtet und im backend-Verzeichnis die notwendigen Abhängigkeiten mit npm install installiert. Die Anwendung konnte anschließend erfolgreich mit "npm run start" gestartet werden.
+Anschließend habe ich ein Codespace eingerichtet und im backend-Verzeichnis die notwendigen Abhängigkeiten mit 'npm install' installiert. Die Anwendung konnte anschließend erfolgreich mit 'npm run start' gestartet werden.
 
 🧪 Manueller UI-Test und E2E Testabdeckung
 Nach einem kurzen manuellen UI-Test, bei dem alle Funktionalitäten überprüft wurden, habe ich eine Liste der Testfälle erstellt, um sicherzustellen, dass die E2E-Testabdeckung gewährleistet ist:
@@ -23,20 +21,18 @@ Nach einem kurzen manuellen UI-Test, bei dem alle Funktionalitäten überprüft 
 - [Löschen Button] Löschen aller Testdaten
 
 🔧 Integration von Cypress
-Als nächstes habe ich das Cypress npm Package installiert und eine cypress.config.js-Datei erstellt. Diese basierte auf der Konfiguration der vorherigen Übung und wurde später um eine Logik erweitert, die die Base-URL dynamisch ermittelt, da diese nur für localhost konfiguriert war und ich aus dem Codespace heraus arbeitete.
+Als nächstes habe ich das Cypress npm-Package installiert und eine cypress.config.js-Datei erstellt. Diese basierte auf der Konfiguration der vorherigen Übung. Die Installation erfolgte im Backend-Node-Projekt.
 
-Hierfür habe ich die Variable process.env.CODESPACE_NAME verwendet, um zwischen localhost und Codespace Ausführung zu unterscheiden.
+Die End-to-End-Tests befinden sich in der Datei backend/cypress/e2e/todo.cy.js. Zusätzlich gibt es in der Datei backend/cypress/support/e2e.js eine Grundkonfiguration, die für alle Tests geladen wird. Sie sorgt dafür, dass der Zustand des Browsers bereinigt wird, indem alle Cookies und der lokale Speicher gelöscht werden. Anschließend wird die Zielseite der Anwendung, in diesem Fall die todo.html, aufgerufen. Diese vorbereitenden Schritte gewährleisten, dass jeder Test in einer sauberen Umgebung startet, um zuverlässige und wiederholbare Ergebnisse zu ermöglichen.
 
-Zusätzlich habe ich folgende Skripte in die package.json aufgenommen, um Cypress-Tests bequem ausführen zu können:
+Zusätzlich habe ich folgende Skripte in die package.json-Datei aufgenommen, um Cypress-Tests bequem ausführen zu können:
     "scripts": {
         "cy:open": "cypress open",
         "cy:run": "cypress run"
     }
 Mit diesen Skripten kann man die Cypress Testlauf-Umgebung entweder im interaktiven Modus (cy:open) oder im Headless-Modus (cy:run) starten.
 
-Beim ersten Testversuch mit Cypress trat eine Fehlermeldung auf, die darauf hinwies, dass eine Standard-Support-Datei fehlte. Diese konnte ich in der Cypress-Dokumentation sowie im letzten Übungsprojekt finden.
-
-Zudem musste ich den Port der Applikation im Codespace öffentlich freigeben, um zu vermeiden, dass Github beim Besuch der App-Seite eine Authentifizierung verlangt. Dies war erforderlich, weil Github vor dem Laden der Seite eine Bestätigung des „Continue“-Buttons anfordert. Diese Bestätigung und das Besuchen der Seite habe ich im support-Verzeichnis in der Datei e2e.js untergebracht, um die Tests sauber zu halten.
+Beim ersten Testversuch mit Cypress trat eine Fehlermeldung auf, die darauf hinwies, dass Github beim Besuch der App-Seite eine Authentifizierung verlangt. Daher war es notwendig, den Port der Applikation im Codespace öffentlich freizugeben.
 
 ✅ Test-Erstellung und -Verifikation
 Nach der erfolgreichen Integration von Cypress habe ich die Tests gemäß des oben genannten Testplans erstellt.
