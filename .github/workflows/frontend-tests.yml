@@ -30,4 +30,4 @@ jobs:
       - name: curl frontend
         run: curl http://localhost:3000/todo.html
       - name: start backend and run tests
-        run: npm run cy:run
+        run: npx cypress run --config "baseUrl=http://localhost:3000"
