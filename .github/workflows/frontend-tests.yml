@@ -28,6 +28,6 @@ jobs:
       - name: run backend
         run: npm run start
       - name: start backend
-        run: npm run start &
+        run: node index.js &
       - name: run frontend tests
         run: npm run cy:run
