@@ -26,6 +26,4 @@ jobs:
       - name: install dependencies
         run: npm i
       - name: run tests
-        uses: cypress-io/github-action@v6
-        with:
-          start: npm run start &
+        run: npx cypress run
