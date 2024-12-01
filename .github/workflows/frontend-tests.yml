@@ -1,4 +1,4 @@
-name: Node.js Package
+name: Frontend Tests
 
 on:
   push
@@ -27,5 +27,5 @@ jobs:
         run: npm i
       - name: start application
         run: npm run start &
-      - name: start backend and run tests
+      - name: run tests
         run: npm run cy:run
